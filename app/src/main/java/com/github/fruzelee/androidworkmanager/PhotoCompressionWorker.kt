@@ -1,18 +1,22 @@
 package com.github.fruzelee.androidworkmanager
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import kotlin.math.roundToInt
 
 class PhotoCompressionWorker(
     private val appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val stringUri = params.inputData.getString(KEY_CONTENT_URI)
             val compressionThresholdInBytes = params.inputData.getLong(
                 KEY_COMPRESSION_THRESHOLD,
@@ -22,6 +26,21 @@ class PhotoCompressionWorker(
             val bytes = appContext.contentResolver.openInputStream(uri)?.use {
                 it.readBytes()
             } ?: return@withContext Result.failure()
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+            var outputBytes: ByteArray
+            var quality = 100
+
+            do {
+                val outputStream = ByteArrayOutputStream()
+                outputStream.use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+                    outputBytes = outputStream.toByteArray()
+                    quality -= (quality * 0.1).roundToInt()
+                }
+            } while (outputBytes.size > compressionThresholdInBytes && quality > 5)
+
         }
     }
 
