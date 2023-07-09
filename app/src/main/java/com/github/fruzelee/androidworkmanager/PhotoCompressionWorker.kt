@@ -4,21 +4,25 @@ import android.content.Context
 import android.net.Uri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PhotoCompressionWorker(
     private val appContext: Context,
     private val params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
-        val stringUri = params.inputData.getString(KEY_CONTENT_URI)
-        val compressionThresholdInBytes = params.inputData.getLong(
-            KEY_COMPRESSION_THRESHOLD,
-            0L
-        )
-        val uri = Uri.parse(stringUri)
-        val bytes = appContext.contentResolver.openInputStream(uri)?.use {
-            it.readBytes()
-        } ?: return Result.failure()
+        return withContext(Dispatchers.IO){
+            val stringUri = params.inputData.getString(KEY_CONTENT_URI)
+            val compressionThresholdInBytes = params.inputData.getLong(
+                KEY_COMPRESSION_THRESHOLD,
+                0L
+            )
+            val uri = Uri.parse(stringUri)
+            val bytes = appContext.contentResolver.openInputStream(uri)?.use {
+                it.readBytes()
+            } ?: return@withContext Result.failure()
+        }
     }
 
     companion object {
