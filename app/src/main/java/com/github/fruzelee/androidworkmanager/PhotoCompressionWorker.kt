@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.File
 import kotlin.math.roundToInt
 
 class PhotoCompressionWorker(
@@ -27,6 +28,8 @@ class PhotoCompressionWorker(
                 it.readBytes()
             } ?: return@withContext Result.failure()
 
+            // convert the byte array to image and compress it
+
             val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
             var outputBytes: ByteArray
@@ -40,6 +43,11 @@ class PhotoCompressionWorker(
                     quality -= (quality * 0.1).roundToInt()
                 }
             } while (outputBytes.size > compressionThresholdInBytes && quality > 5)
+
+            // write bytes into file and save file into the Storage File system
+
+            val file = File(appContext.cacheDir, "${params.id}.jpg")
+            file.writeBytes(outputBytes)
 
         }
     }
