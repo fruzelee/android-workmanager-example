@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -48,6 +49,14 @@ class PhotoCompressionWorker(
 
             val file = File(appContext.cacheDir, "${params.id}.jpg")
             file.writeBytes(outputBytes)
+
+            // return the result with the absolute file path
+
+            Result.success(
+                workDataOf(
+                    KEY_RESULT_PATH to file.absolutePath
+                )
+            )
 
         }
     }
