@@ -46,6 +46,9 @@ class MainActivity : ComponentActivity() {
             intent?.getParcelableExtra(Intent.EXTRA_STREAM)
         } ?: return
 
+        // updateUncompressUri which is just the uri we get from the other app like google chrome
+        viewModel.updateUncompressUri(uri)
+
         // define the work request to launch the worker
 
         val request = OneTimeWorkRequestBuilder<PhotoCompressionWorker>()
