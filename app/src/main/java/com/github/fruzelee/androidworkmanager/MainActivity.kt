@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity() {
                 )
             )
             .build()
+        viewModel.updateWorkId(request.id) // allow us to listen for updates of that specific worker we have launch here with this request
         workManager.enqueue(request)
 
     }
