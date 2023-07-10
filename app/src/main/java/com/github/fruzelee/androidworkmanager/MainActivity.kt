@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +20,9 @@ import com.github.fruzelee.androidworkmanager.ui.theme.AndroidWorkManagerExample
 class MainActivity : ComponentActivity() {
 
     private lateinit var workManager: WorkManager
+
+    // instantiate the view model
+    private val viewModel by viewModels<PhotoViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
