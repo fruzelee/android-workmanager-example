@@ -1,6 +1,8 @@
 package com.github.fruzelee.androidworkmanager
 
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +24,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        val uri = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            intent?.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+        } else{
+            intent?.getParcelableExtra(Intent.EXTRA_STREAM)
+        }
     }
 }
 
