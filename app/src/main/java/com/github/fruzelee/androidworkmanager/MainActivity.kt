@@ -1,6 +1,7 @@
 package com.github.fruzelee.androidworkmanager
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -46,7 +47,11 @@ class MainActivity : ComponentActivity() {
                             PhotoCompressionWorker.KEY_RESULT_PATH
                         )
 
-                        filePath?.let {  }
+                        // reconstruct the bitmap out of that filePath so that we can read that file as a bitmap
+                        filePath?.let {
+                            val bitmap = BitmapFactory.decodeFile(it)
+                            viewModel.updateCompressBitmap(bitmap)
+                        }
                     }
 
                 }
