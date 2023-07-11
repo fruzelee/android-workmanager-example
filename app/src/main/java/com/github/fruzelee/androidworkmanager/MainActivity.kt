@@ -109,11 +109,14 @@ class MainActivity : ComponentActivity() {
                     PhotoCompressionWorker.KEY_COMPRESSION_THRESHOLD to 1024 * 20L
                 )
             )
-            .setConstraints(
+
+            // remove the constraint here to fix the bug of not working of the workmanager compression
+
+            /*.setConstraints(
                 Constraints(
                     requiresStorageNotLow = true
                 )
-            )
+            )*/
             .build()
         viewModel.updateWorkId(request.id) // allow us to listen for updates of that specific worker we have launch here with this request
         workManager.enqueue(request)
