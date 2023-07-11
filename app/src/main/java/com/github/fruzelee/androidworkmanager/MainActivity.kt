@@ -9,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.work.Constraints
@@ -31,6 +33,23 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AndroidWorkManagerExampleTheme {
+
+                // listen to the worker result here
+                val workerResult = viewModel.workId?.let { id ->
+                    workManager.getWorkInfoByIdLiveData(id).observeAsState().value
+                }
+
+                LaunchedEffect(key1 = workerResult?.outputData) {
+                    if (workerResult?.outputData != null) {
+                        // retrieve the filePath that we passed to the successful result after our worker is running
+                        val filePath = workerResult.outputData.getString(
+                            PhotoCompressionWorker.KEY_RESULT_PATH
+                        )
+
+                        filePath?.let {  }
+                    }
+
+                }
 
             }
         }
